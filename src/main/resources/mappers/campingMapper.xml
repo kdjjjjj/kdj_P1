@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ez.en.page.campingMapper">
+
+	
+	<!-- 캠핑장 등록 (관리자용 페이지의 CampingDTO로 파라미터 타입 변경)-->
+	<insert id="register" parameterType="CampingDTO"> 
+		INSERT INTO camping (cam_code, region_code, cam_name, cam_address, cam_tel, cam_start_time, cam_finish_time, 
+							thema_code, option_code, cam_hide, cam_regdate)
+		VALUES (#{cam_code}, #{region_code}, #{cam_name}, #{cam_address}, #{cam_tel}, #{cam_start_time}, #{cam_finish_time}, 
+				#{thema_code}, #{option_code}, #{cam_hide}, now())
+	</insert>
+
+	<!-- 캠핑장 수정 -->
+	<update id="modify" parameterType="CampingDTO">
+		UPDATE camping 
+		SET cam_code=#{cam_code}, region_code=#{region_code}, cam_name=#{cam_name}, cam_address=#{cam_address}, cam_tel=#{cam_tel}, 
+			cam_start_time=#{cam_start_time}, cam_finish_time=#{cam_finish_time}, thema_code=#{thema_code}, option_code=#{option_code}, 
+			cam_hide=#{cam_hide}, cam_regdate=now()
+		WHERE cam_code=#{cam_code}
+	</update>
+
+	<!-- 캠핑장 삭제 -->
+	<delete id="remove" parameterType="String">
+		DELETE FROM camping WHERE cam_code=#{cam_code}
+	</delete>
+
+
+	<!-- 캠핑장 전체 조회(내림차순)  -->
+	<select id="list" resultType="CampingDTO">
+		SELECT * FROM camping order by cam_code desc
+	</select>
+	
+	<!-- 캠핑장 상세페이지 -->
+	<select id="detail" resultType="CampingDTO">
+		SELECT * FROM camping WHERE cam_code = #{cam_code}
+	</select>	
+	
+		<!-- 캠핑장 수 조회 -->
+	<select id="countPaging" resultType="int">
+		<![CDATA[
+		select count(cam_code) 
+		from camping
+		where cam_code > 'cam000'
+		]]>
+	</select>
+	
+	<!-- 캠핑장 페이징처리 (cam_address 조회) -->
+	<select id="listPage" resultType="CampingDTO">
+		<![CDATA[
+			SELECT * FROM camping 
+			WHERE cam_code > 'cam000'
+			order by cam_code desc 
+			limit #{page}, 10 ;
+		]]>
+	</select>
+	
+	<select id="listCriteria" resultType="CampingDTO">
+		<![CDATA[
+		SELECT * FROM camping
+		WHERE cam_code > 'cam000'
+		order by cam_code desc 
+		limit #{pageStart}, #{perPageNum} ;
+		]]>
+	</select>
+	
+	<!-- 캠핑장 검색 처리 -->
+	<select id="listSearch" resultType="CampingDTO">
+		 SELECT *
+		 FROM camping
+		 
+		<if test="keyword != null">
+		 WHERE (cam_name like CONCAT('%', #{keyword}, '%') OR cam_address like CONCAT('%', #{keyword}, '%'))
+		</if>
+		order by cam_code desc
+		limit #{pageStart}, #{perPageNum}
+	</select>
+	
+	<!-- 캠핑장 개수 조회 -->
+	<select id="listSearchCount" resultType="int">
+		 SELECT count(cam_code)
+		 FROM camping
+		 <if test="keyword != null">
+		 WHERE (cam_name like CONCAT('%', #{keyword}, '%') OR cam_address like CONCAT('%', #{keyword}, '%'))
+		 </if>
+	</select>
+	
+	
+	
+	
+	<!-- ====================================== -->
+	
+	<!-- 캠핑장(상세페이지) 정보 조회 -->	
+	<select id="selectAll" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT camping.*, camping_rev_info.* 
+		FROM camping, camping_rev_info 
+		WHERE camping.cam_code = camping_rev_info.cam_code
+	</select>
+	
+
+	<!-- 현재 날짜 조회 -->
+	<select id="selectTime" resultType="String">
+		select now()
+	</select>
+	
+
+	
+	<!-- 최신 등록 캠핑장 코드 조회 -->
+	<select id="selectMaxCode" resultType="int">
+		select MAX(cam_code) from camping
+	</select>
+
+	<!-- 캠핑장 별점 평균 내림차순(주연) -->
+	<select id="revAvg" resultType="map" parameterType="String">
+		select c.cam_code, avg(j.r_star) as avg from camping_rev_info c join(select r.r_star, r.rev_code, j.cri_area_code from review r join reservation j
+		on r.rev_code = j.rev_code) j
+		on c.cri_area_code = j.cri_area_code
+		group by c.cam_code
+		order by avg desc
+		limit 0,9
+	</select>
+	
+
+	<!-- 캠핑장 추천에 의한 필요정보 리스트(주연) -->
+	<select id="camList" resultType="CampingDTO">
+		select c.cam_code, c.f_code,c.cam_name, c.cam_address, c.cam_start_time, c.cam_finish_time from camping c
+		where c.cam_code in
+		<foreach item="list" collection="list" open="(" separator="," close=")">
+		#{list.cam_code}
+		</foreach>
+	</select>
+	
+</mapper>

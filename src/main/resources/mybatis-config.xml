@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias alias="UserDTO" type="ez.en.page.user.UserDTO"/>
+		<typeAlias alias="ReservationDTO" type="ez.en.page.reservation.ReservationDTO"/>
+		<typeAlias alias="Camping_rev_infoDTO" type="ez.en.page.camping_rev_info.CampingRevInfoDTO"/>
+		<typeAlias alias="JjimDTO" type="ez.en.page.jjim.JjimDTO"/>
+		<typeAlias alias="CampingDTO" type="ez.en.page.camping.CampingDTO"/>
+		<typeAlias alias="AdminCampingDTO" type="ez.en.page.admin.camping.AdminCampingDTO"/>
+		<typeAlias alias="ReviewDTO" type="ez.en.page.review.ReviewDTO"/>
+		<typeAlias alias="Review_recommendDTO" type="ez.en.page.review_recommend.Review_recommendDTO"/>
+		<typeAlias alias="CouponDTO" type="ez.en.page.coupon.CouponDTO"/>
+		<typeAlias alias="FIleDTO" type="ez.en.page.file.FileDTO"/>
+		<typeAlias alias="NoticeDTO" type="ez.en.page.notice.NoticeDTO"/>
+		<typeAlias alias="Onetoone_reply" type="ez.en.page.onetoone.Onetoone_reply"/>
+		<typeAlias alias="OnetooneDTO" type="ez.en.page.onetoone.OnetooneDTO"/>
+  	<typeAlias alias="Onetoone_reply" type="ez.en.page.onetoone.Onetoone_reply"/>
+		<typeAlias alias="Onetoone_replyDTO" type="ez.en.page.onetoone_reply.Onetoone_replyDTO"/>
+		<typeAlias alias="Onetoone_reply" type="ez.en.page.onetoone.Onetoone_reply"/>
+		<typeAlias alias="CampingDTO" type="ez.en.page.camping.CampingDTO"/>
+		<typeAlias alias="RegionDTO" type="ez.en.page.dto.RegionDTO"/>
+		<typeAlias alias="OptionDTO" type="ez.en.page.dto.OptionDTO"/>
+		<typeAlias alias="ThemaDTO" type="ez.en.page.camping_thema.ThemaDTO"/>
+		<typeAlias alias="My_couponDTO" type="ez.en.page.my_coupon.My_couponDTO"/>
+		<typeAlias alias="Onetoone_reply" type="ez.en.page.onetoone.Onetoone_reply"/>
+		<typeAlias alias="ReservationDTO" type="ez.en.page.reservation.ReservationDTO"/>
+		<typeAlias alias="CampingRevInfoDTO" type="ez.en.page.camping_rev_info.CampingRevInfoDTO"/>
+		<typeAlias alias="AdminCampingRevInfoDTO" type="ez.en.page.admin.camping_rev_info.AdminCampingRevInfoDTO"/>
+		<typeAlias alias="Criteria" type="ez.en.page.domain.Criteria"/>
+		<typeAlias alias="ReservationDTO" type="ez.en.page.reservation.ReservationDTO"/>
+	</typeAliases>
+</configuration>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ez.en.page.noticeMapper">
+
+	<select id="list" resultType="NoticeDTO">
+		<!-- 공지사항 전체 조회 -->
+		SELECT n_code, f_code,n_title,n_content,n_w_date,n_writer FROM
+		notice
+	</select>
+	<select id="selectOne" resultType="NoticeDTO" parameterType="int">
+		<!--공지사항 선택 조회 -->
+		select n_code, f_code,n_title,n_content,n_w_date,n_writer from notice
+		where n_code = #{n_code}
+	</select>
+	
+	<insert id="insert" parameterType="NoticeDTO">
+		<!--공지사항 글 추가 -->
+		insert into notice	(n_title,n_content,n_w_date,n_writer) 
+		values (#{n_title},#{n_content},now(),#{n_writer})
+	</insert>
+	<update id="update" parameterType="NoticeDTO">
+		<!--공지사항 글 수정 -->
+		update notice set n_title = #{n_title},n_content = #{n_content},n_w_date = now(),n_writer = #{n_writer} where n_code = #{n_code}
+	</update>
+		<delete id="delete" parameterType="int">
+		<!--공지사항 글 삭제 -->
+		delete from notice where n_code = #{n_code}
+	</delete>
+</mapper>

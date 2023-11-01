@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ez.en.page.onetooneMapper">
+
+	<select id="list1" resultType="OnetooneDTO">
+		<!-- 1 대 1 게시판 전체 조회 -->
+		select o_code, id, f_code, o_title, o_content, o_w_date from
+		onetoone
+	</select>
+	<select id="selectOne1" parameterType="int"
+		resultType="OnetooneDTO">
+		<!-- 1 대 1 게시판 선택 조회 -->
+		select o_code, id, f_code, o_title, o_content, o_w_date from
+		onetoone
+		where
+		o_code = #{o_code}
+	</select>
+	<select id="SELECTONE" parameterType="String"
+		resultType="OnetooneDTO">
+		<!-- 1 대 1 게시판 자기 아이디로 조회 -->
+		select o_code, id, f_code, o_title, o_content, o_w_date from
+		onetoone where
+		id = #{id}
+	</select>
+	<insert id="insert1" parameterType="OnetooneDTO">
+		<!-- 1 대 1 게시판 추가 -->
+		insert into onetoone
+		(o_code,id,o_title,o_content,o_w_date)value(#{o_code},#{id},#{o_title},#{o_content},now())
+	</insert>
+	<update id="update1" parameterType="OnetooneDTO">
+		<!-- 1 대 1 게시판 수정 -->
+		update onetoone set id = #{id},o_title=#{o_title},o_content =
+		#{o_content},
+		o_w_date = now() where
+		o_code=#{o_code}
+	</update>
+	<delete id="delete1" parameterType="int">
+		<!-- 1 대 1 게시판 삭제 -->
+		delete from page200.onetoone where o_code = #{o_code}
+	</delete>
+	<select id="detail" parameterType="int" resultType="Onetoone_reply">
+		select rp_code, o_code, id, rp_content,  rp_w_date from
+		onetoone_reply where o_code = #{o_code}
+	</select>
+	<insert id="reply" parameterType="Onetoone_reply">
+	insert into onetoone_reply
+	(id, rp_content, o_code , rp_w_date) 
+	values (#{id},#{rp_content},#{o_code},now())
+	</insert>
+	<select id="detailReply" parameterType="int" resultType="Onetoone_reply">
+	select rp_code, o_code, id, rp_content, rp_w_date from 
+	where rp_code = #{rp_code}
+	</select>
+	<update id="replyupdate" parameterType="Onetoone_reply">
+	update Onetoone_reply 
+	set id = #{id},
+	rp_content = #{rp_content}
+	where rp_code = #{rp_code}
+	</update>
+	<delete id="replyDelete" parameterType="Onetoone_reply">
+	Delete from onetoone_reply where rp_code = #{rp_code}
+	
+	</delete>
+</mapper>

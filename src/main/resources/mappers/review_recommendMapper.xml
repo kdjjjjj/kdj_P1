@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ez.en.page.review_recommendMapper">
+
+	<!-- 리뷰 좋아요 작성 SQL -->
+
+	<!-- 새로만듦 -->
+	<!-- 리뷰좋아요 -->
+	<update id="like_check" parameterType="HashMap">
+		UPDATE review_recommend
+		SET is_recommend = is_recommend + 1
+		WHERE id=#{id} AND r_code=#{r_code}
+	</update>
+
+	<!-- 리뷰좋아요취소 -->
+	<update id="like_check_cancel" parameterType="HashMap">
+		UPDATE review_recommend
+		SET is_recommend = 0
+		WHERE id=#{id} AND r_code=#{r_code}
+	</update>
+
+
+
+
+
+</mapper>

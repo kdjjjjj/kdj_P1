@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ez.en.page.userMapper">
+	<!-- 로그인 처리를 위한 SQL -->
+	
+	<select id="login" resultType="UserDTO" parameterType="UserDTO">
+	SELECT id, nick, f_code, stop FROM user where id =#{id} AND pw =#{pw} AND admin is null
+	</select>
+	
+	<insert id="signup" parameterType="UserDTO">
+		insert into user(id, f_code, pw, name, nick, birth, phone, email)
+		values(#{id}, #{f_code}, #{pw}, #{name},#{nick}, #{birth}, #{phone}, #{email})
+	</insert>
+	
+	<select id="idchk" parameterType="String" resultType="String">
+		select id from user where id = #{id}
+	</select>
+	
+	<select id="nickchk" parameterType="String" resultType="String">
+	select nick from user where nick = #{nick}
+	</select>
+	
+	<select id="idFind" parameterType="UserDTO" resultType="String">
+		select id from user
+		where name = #{name} and phone = #{phone}
+	</select>
+	
+	<select id="pwFind" parameterType="UserDTO" resultType="String">
+		select id from user
+		where id = #{id} and phone = #{phone}
+	</select>
+	
+	<select id="pwFind2" parameterType="UserDTO" resultType="int">
+		select count(*) from user
+		where id = #{id} and phone = #{phone} and name = #{name}
+	</select>
+	
+	<update id="pwchange" parameterType="UserDTO">
+		update user set pw = #{pw}
+		where id = #{id}
+	</update>
+	
+</mapper>

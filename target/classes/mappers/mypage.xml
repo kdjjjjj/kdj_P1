@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ez.en.page.mypageMapper">
+<!-- 마이페이지 -->
+	<!-- 예약코드 검색 처리 -->
+	<select id="listSearch" parameterType="map" resultType="ReservationDTO">
+		 SELECT rev_code,rev_start_date,rev_finish_date 
+		 FROM reservation
+		 join user
+		 on reservation.id = user.id
+		<if test="revcode != null">
+		 WHERE rev_code like CONCAT('%', #{revcode}, '%') and user.id = #{id}
+		 </if>
+		limit #{pageStart}, #{perPageNum}
+	</select>
+	
+	<!-- 예약코드 개수 조회 -->
+	<select id="listSearchCount" parameterType="map" resultType="int">
+		 select count(rev_code)
+		from reservation
+		join user
+		 on reservation.id = user.id
+		 <if test="revcode != null">
+		where rev_code like CONCAT('%', #{revcode}, '%') and user.id = #{id}
+		 </if>
+	</select>
+	<!-- 예약 페이징 Criteria -->
+	<select id="revlistCriteria" resultType="ReservationDTO">
+	<![CDATA[
+		SELECT rev_code,rev_start_date,rev_finish_date 
+		FROM reservation
+		join user
+		on reservation.id = user.id
+		where user.id = #{id} and
+        rev_code > 'rev000'
+        order by rev_code desc, rev_start_date desc
+        limit #{pageStart},#{perPageNum};
+	]]>
+	</select>
+	<!-- 예약 페이징 페이지 번호 -->
+	<select id="countPaging" resultType="int">
+	<![CDATA[
+		select count(rev_code)
+		from reservation where rev_code > 'rev000' and id = #{id}
+	]]>
+	</select>
+	<!-- 예약 상세조회2 -->
+	<select id="revdetail2" resultType="Map" parameterType="Object">
+		select d.rev_start_date,d.rev_code ,c.cam_name, d.cri_area_code, d.cri_price, d.cri_max  from camping c join (select camping_rev_info.cri_area_code, cam_code, cri_max, cri_price, r.rev_code,r.rev_start_date
+		from camping_rev_info
+		join reservation as r
+		on r.cri_area_code = camping_rev_info.cri_area_code
+		where r.rev_code = #{rev_code}) d
+		on c.cam_code = d.cam_code;
+	</select>
+	
+	<!-- 예약 취소 -->
+	<delete id="revdelete" parameterType="Object">
+		delete from reservation
+		where rev_code = #{rev_code}
+	</delete>
+	<!-- 내 찜목록 Criteria -->
+	<select id="jjimlistCriteria" resultType="JjimDTO">
+	<![CDATA[
+		select  c.cam_code,j.j_num, c.cam_name, j.is_jjim from jjim as j join camping as c
+		on j.cam_code = c.cam_code
+		where j.id = #{id} and
+        j.j_num > 0
+        order by j.j_num desc limit #{pageStart},#{perPageNum}
+	]]>
+	</select>
+	<!-- 내 찜목록 페이지 번호 -->
+	<select id="jjimcountPaging" resultType="int">
+	<![CDATA[
+	select count(j_num) from jjim
+	where j_num > 0 and id = #{id}
+	]]>
+	</select>
+	
+	<!-- 내 리뷰목록 페이징 Criteria -->
+	<select id="reviewlistCriteria" resultType="ReviewDTO">
+	<![CDATA[
+		SELECT r_code,review.id,rev_code,review.f_code,r_w_date,r_content,r_star,r_declaration
+		FROM review
+		join user
+		on review.id = user.id
+		where user.id = #{id} and
+        r_code > 'r000'
+        order by r_code desc, rev_code desc
+        limit #{pageStart},#{perPageNum}
+	]]>
+	</select>
+	<!-- 내 리뷰목록 페이지 번호 -->
+	<select id="reviewcountPaging" resultType="int">
+	<![CDATA[
+		select count(r_code)
+		from review
+		where r_code > 'r000' and id = #{id}
+	]]>
+	</select>
+	
+	<!-- 내 쿠폰함 페이징 Criteria -->
+	<select id="couponlistCriteria" resultType="CouponDTO">
+	<![CDATA[
+		select c.cp_code, c.cp_name, my.use_coupon, c.cp_start_date , c.cp_end_date from my_coupon my join coupon c
+		on my.cp_code = c.cp_code
+		where my.id = #{id}
+        order by cp_num desc limit #{pageStart},#{perPageNum}
+	]]>
+	</select>
+	<!-- 내 쿠폰함 페이지 번호 -->
+	<select id="couponcountPaging" resultType="int">
+	<![CDATA[
+		select count(cp_code)
+		from my_coupon
+		where cp_num > 0 and id = #{id}
+	]]>
+	</select>
+	<!-- 회원정보 하나 가져오기 -->
+	<select id="info" resultType="UserDTO" parameterType="Object">
+		SELECT id,f_code,pw,name,nick,birth,phone,email
+		from user
+		where id = #{id}
+	</select>
+	<!-- 회원정보수정 -->
+	<update id="edit" parameterType="UserDTO">
+		update user set name = #{name},f_code = #{f_code},nick = #{nick},phone = #{phone},email = #{email}
+		where id = #{id}
+	</update>
+	<!-- 회원탈퇴 -->
+	<delete id="quit" parameterType="UserDTO">
+		delete from user
+		where id = #{id}
+	</delete>
+	<!-- 비밀번호수정 -->
+	<update id="editpassword" parameterType="UserDTO">
+		update user set pw = #{pw}
+		where id = #{id}
+	</update>
+	<!-- 닉네임중복 -->
+	<select id="nickcheck" parameterType="String" resultType="Integer">
+		select count(*) from user
+		where nick = #{nick}
+	</select>
+	<!-- 프로필 사진 바꿀시 파일이름 바꾸기 -->
+	<update id="editProfile" parameterType="FIleDTO">
+		update file set f_name = #{f_name} 
+		where f_code = #{f_code}
+	</update>
+	
+</mapper>

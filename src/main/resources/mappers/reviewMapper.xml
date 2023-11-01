@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ez.en.page.reviewMapper">
+	<!-- 리뷰 게시판 작성 SQL -->
+
+	<!-- 리뷰'전체'목록 조회 -->
+	<select id="listAll" resultType="ReviewDTO">
+		SELECT r_code, id, rev_code,
+		f_code, r_w_date, r_content, r_star, r_declaration, r_lockpwd
+		FROM
+		review order by r_w_date DESC
+	</select>
+
+	<!-- 리뷰'선택'목록 조회 -->
+	<select id="selectOne" parameterType="String"
+		resultType="ReviewDTO">
+		SELECT r_code, id, rev_code, f_code, r_w_date, r_content,
+		r_star, r_declaration, r_lockpwd
+		FROM review where r_code = #{r_code}
+	</select>
+
+	<!-- user가 예약한 캠핑이름 조회 -->
+	<select id="campingName" parameterType="String"
+		resultType="CampingDTO">
+		select cam.cam_name, cam.cam_code from camping cam join
+		(select
+		c.cam_code from reservation r join camping_rev_info c
+		on
+		r.cri_area_code = c.cri_area_code
+		where r.rev_code = #{rev_code})as j
+		on cam.cam_code = j.cam_code
+	</select>
+
+	<!-- 리뷰 작성 -->
+	<insert id="insert" parameterType="ReviewDTO">
+		insert into review(r_code, id,
+		rev_code, r_w_date, r_content, r_star, r_declaration,
+		r_lockpwd)
+		values
+		(#{r_code},#{id},#{rev_code},now(),#{r_content},#{r_star},#{r_declaration},#{r_lockpwd})
+	</insert>
+
+	<!-- 리뷰 수정 -->
+	<update id="update" parameterType="ReviewDTO">
+		update review set
+		r_w_date=now(), r_content=#{r_content}, r_star=#{r_star} where
+		r_code=#{r_code}
+	</update>
+
+	<!-- 리뷰 삭제 -->
+	<delete id="delete" parameterType="String">
+		delete from review where
+		r_code=#{r_code}
+	</delete>
+
+	<!-- 캠핑장 예약한 사람 닉네임 조회 -->
+	<select id="userNick" parameterType="String"
+		resultType="UserDTO">
+		select s.nick from reservation r join user s
+		on r.id = s.id
+		where rev_code = #{rev_code}
+	</select>
+
+	<!-- 리뷰갯수 count 구하기 -->
+	<select id="reviewCount" parameterType="String" resultType="int">
+		select COUNT(cam.cam_code) from camping_rev_info cam JOIN
+		(SELECT
+		rev.cri_area_code FROM review r INNER JOIN reservation rev ON
+		r.rev_code=rev.rev_code) j
+		ON cam.cri_area_code=j.cri_area_code
+		where
+		cam.cam_code=#{cam_code}
+	</select>
+
+
+	<!-- 리뷰화면 캠핑장 상세에서 보여주기22 -->
+	<select id="camReviewAll" parameterType="String"
+		resultType="ReviewDTO">
+		select id, r_w_date, r_content, r_star, r_declaration from
+		review r join (select re.rev_code from camping_rev_info ci join
+		reservation re
+		on ci.cri_area_code = re.cri_area_code
+		where ci.cam_code
+		= #{cam_code}) j
+		on r.rev_code = j.rev_code
+	</select>
+
+	<!-- 페이징1 -->
+	<select id="listPage" resultType="ReviewDTO">
+	<![CDATA[ select r_code, id, rev_code, f_code, r_w_date, r_content, r_star, r_declaration, r_lockpwd 
+	from review 
+	where r_code > 'r000' order by r_code desc limit #{page},10 ]]>
+	</select>
+
+	<!-- 페이징2 -->	
+	<select id="listCriteria" resultType="ReviewDTO">
+	<![CDATA[ select r_code, id, rev_code, f_code, r_w_date, r_content, r_star, r_declaration, r_lockpwd 
+	from review where r_code > 'r000' 
+	order by r_w_date desc limit #{pageStart},#{perPageNum} ]]>
+	</select>
+
+	<!-- 페이징수정 -->
+	<select id="countPaging" resultType="int">
+	<![CDATA[ select count(r_code) from review where r_code > 'r000' ]]>
+	</select>
+	
+	<!-- 리뷰 잠금 -->
+	<update id="lockUpdate" parameterType="String">
+		update review 
+		set r_lockpwd = if((select r_lockpwd from(select r_lockpwd from review where r_code = #{r_code}) 
+		as tmp) = 1, 0, 1) where r_code=#{r_code}
+	</update>
+	
+		
+</mapper>

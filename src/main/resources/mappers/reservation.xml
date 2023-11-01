@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ez.en.page.reservationMapper">
+
+	<!-- 날짜 중복 조회 (if>count가 0이면 예약가능, 1이상이면 불가) -->
+	<select id="selectDate" parameterType="reservationDTO" resultType="int">
+		select count(*) from reservation
+		<![CDATA[
+		where rev_finish_date <= #{rev_finish_date}
+		and rev_start_date >= #{rev_start_date}
+		]]>
+	</select>
+	
+
+	<!-- 예약추가 -->
+	<insert id="insert" parameterType="ReservationDTO">
+		insert into reservation(rev_code, id, cri_area_code, rev_start_date, rev_finish_date) 
+		values(#{rev_code}, #{id}, #{cri_area_code}, #{rev_start_date}, #{rev_finish_date});
+	</insert>
+	
+	
+	
+	<!-- 예약수정 -->
+	
+	<!-- 예약취소 -->
+	
+	<!-- 예약조회 -->
+	
+
+
+</mapper>

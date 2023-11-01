@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ez.en.page.adminMapper">
+	
+	<select id="adminLogin" parameterType="UserDTO" resultType="UserDTO">
+	SELECT id, nick FROM user where id =#{id} AND pw =#{pw} AND admin is not null
+	</select>
+	
+	<select id="userCount" resultType="int">
+		select count(*) from user where admin is null
+	</select>
+	
+	<select id="searchCount" parameterType="map" resultType="int">
+		select count(*) from user where admin is null
+		<choose>
+			<when test="selected.equals('all')">
+				and id like concat('%',#{type},'%')
+				or nick like concat('%',#{type},'%')
+			</when>
+			<when test="selected.equals('id')">
+				and id like concat('%',#{type},'%')
+			</when>
+			<when test="selected.equals('type')">
+				and nick like concat('%',#{type},'%')
+			</when>
+		</choose>
+	</select>
+	
+	<select id="userList" parameterType="Criteria" resultType="UserDTO">
+		select id, nick, stop from user where admin is null
+		limit #{pageStart},#{perPageNum}
+	</select>
+	
+	<select id="search" parameterType="map" resultType="UserDTO">
+		select id, nick, stop from user where admin is null
+		<choose>
+			<when test="selected == 'all'">
+				and id like concat('%',#{type},'%')
+				or nick like concat('%',#{type},'%')
+			</when>
+			<when test="selected == 'id'">
+				and id like concat('%',#{type},'%')
+			</when>
+			<when test="selected == 'nick'">
+				and nick like concat('%',#{type},'%')
+			</when>
+		</choose>
+		limit #{pageStart},#{perPageNum}
+	</select>
+	
+	<update id="userStop" parameterType="list">
+		update user set stop = '1'
+		where id in
+		<foreach collection="list" item="userList" open="(" close=")" separator=",">
+		#{userList}
+		</foreach>
+	</update>
+</mapper>

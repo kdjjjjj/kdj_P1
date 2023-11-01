@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ez.en.page.admincamping_rev_infoMapper">
+
+	<!-- 캠핑장 예약정보 추가(admin) -->
+	<insert id="insert" parameterType="AdminCampingRevInfoDTO">
+		insert into camping_rev_info(cri_area_code, cam_code, cri_max, cri_price) 
+		values (#{cri_area_code}, #{cam_code}, #{cri_max}, #{cri_price})
+	</insert>
+	<!-- 캠핑장 예약정보 수정(admin) -->
+	<!-- <update id="update" parameterType="AdminCampingRevInfoDTO">
+		update camping_rev_info set cri_area_code=#{cri_area_code}, cri_max=#{cri_max}, cri_price=#{cri_price} 
+		where cri_area_code=#{cri_area_code} 
+	</update>  -->
+	
+<!-- 	<update id="update" parameterType="map">
+		update camping_rev_info set cri_area_code=#{after_cri_area_code}, cri_max=#{cri_max}, cri_price=#{cri_price} 
+		where cri_area_code=#{before_cri_area_code}
+	</update> -->
+	
+	<update id="update" parameterType="map">
+		update camping_rev_info set cri_max=#{cri_max}, cri_price=#{cri_price} 
+		where cri_area_code=#{cri_area_code}
+	</update>
+	
+	
+	<!-- 캠핑장 예약정보 삭제(admin) -->
+	<delete id="delete" parameterType="String">
+		delete from camping_rev_info where cri_area_code=#{cri_area_code}
+	</delete>
+	
+	
+	<!-- 캠핑장 예약정보 조회(해당 캠핑장 디테일 -> 예약하기에서 조회) -->
+	<select id="select" resultType="AdminCampingRevInfoDTO" parameterType="String">
+		select * from camping_rev_info where cam_code=#{cam_code}
+	</select>
+	
+	<!-- 캠핑장 예약정보 조회(구역 -수정,삭제용) -->
+	<select id="selectArea" resultType="AdminCampingRevInfoDTO" parameterType="String">
+		select * from camping_rev_info where cri_area_code=#{cri_area_code}
+	</select>
+	
+	<!-- 캠핑장 예약정보 전체조회 -->
+	<select id="selectAll" resultType="AdminCampingRevInfoDTO">
+		select * from camping_rev_info
+	</select>
+
+
+</mapper>

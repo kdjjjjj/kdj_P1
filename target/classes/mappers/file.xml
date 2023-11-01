@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ez.en.page.fileMapper">
+	
+	<insert id="fileupload" parameterType="FIleDTO">
+		insert into file(f_code, f_realroot, f_name, f_root)
+		values(#{f_code},#{f_realroot},#{f_name}, #{f_root})
+	</insert>
+	
+	<select id="myprofile" parameterType="String" resultType="map">
+	select f.f_code, u.id, f.f_root, f.f_name from user u join file f
+	on f.f_code = u.f_code
+	where u.id = #{id}
+	</select>
+	
+</mapper>

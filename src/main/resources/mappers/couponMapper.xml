@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ez.en.page.couponMapper">
+	
+	<!-- 쿠폰 전체조회 -->
+	<select id="listAll" resultType="CouponDTO">
+		SELECT * FROM page200.coupon
+	</select>
+
+	<!-- 쿠폰 선택조회 -->
+	<select id="selectOne" resultType="CouponDTO" parameterType="String">
+		select * from page200.coupon where cp_code= #{cp_code}
+	</select>
+	
+	<!-- 쿠폰 수정 -->
+	<update id="update" parameterType="CouponDTO">
+		update page200.coupon set
+		cp_name = #{cp_name}, cp_content = #{cp_content}, cp_amount = #{cp_amount}, cp_sale = #{cp_sale}, cp_start_date = #{cp_start_date}, cp_end_date = #{cp_end_date} 
+		where cp_code = #{cp_code}
+	</update>
+	
+	<!-- 쿠폰 추가 -->
+	<insert id="insert" parameterType="CouponDTO">
+		insert into coupon(cp_code, cp_name, cp_content, cp_amount, cp_sale, cp_start_date, cp_end_date)
+		values(#{cp_code}, #{cp_name}, #{cp_content}, #{cp_amount}, #{cp_sale}, #{cp_start_date}, #{cp_end_date})
+	</insert>
+	
+	<!-- 쿠폰 삭제 -->
+	<delete id="delete" parameterType="String">
+		delete from coupon where cp_code = #{cp_code}
+	</delete>
+	
+	<!-- 쿠폰발급 -->
+	<insert id="couponissue" parameterType="My_couponDTO">
+		insert into my_coupon(cp_code,id) VALUES(#{cp_code},#{id})
+	</insert>
+	
+	<!-- 쿠폰수량 감소 -->
+	<update id="updatenum" parameterType="String">
+		update coupon set cp_amount = cp_amount - 1
+		where cp_code = #{cp_code}
+	</update>
+	
+	<!-- 쿠폰함에 해당쿠폰 있는지 여부 조회 -->
+	<select id="mycouponCheck" parameterType="My_couponDTO" resultType="int">
+		select count(*) from my_coupon where id = #{id} and cp_code = #{cp_code}
+	</select>
+	
+	<!-- 차월 생일 회원조회 -->
+	<select id="birthday" parameterType="String" resultType="int">
+		select count(*) from user where id = #{id} and mid(birth, 6 , 2) =(MONTH(NOW())+1)
+	</select>
+	
+	<!-- ID 별 예약 갯수 조회 -->
+	<select id="reservationNom" parameterType="String" resultType="int">
+		SELECT count(*) from page200.reservation where id = #{id};
+	</select>
+	
+	
+</mapper>
